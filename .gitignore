@@ -35,3 +35,4 @@ dist-ssr
 *.pem
 .env.backup
 .env.save
+server/.env
