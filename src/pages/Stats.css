@@ -9,7 +9,7 @@
 }
 
 /* Redirect Button - Enhanced */
-.redirect-button {
+.back-button {
     position: absolute;
     top: 1.5rem;
     left: 1.5rem;
@@ -24,7 +24,10 @@
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
     z-index: 10;
-    /* Ensure it's above other elements if necessary */
+    margin-right: 1rem;
+    /* Add margin to separate buttons */
+    display: inline-block;
+    /* Ensure buttons display properly next to each other */
 }
 
 .redirect-button:hover {
@@ -41,6 +44,13 @@
     /* Press down effect */
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
     /* Revert shadow */
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
 }
 
 /* Key Metrics Section */
