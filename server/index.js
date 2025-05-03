@@ -49,6 +49,8 @@ app.post('/api/survey', async (req, res) => {
       throw new Error('Database not connected');
     }
 
+    console.log('Received survey response:', req.body);
+
     // Analyze responses using Gemini
     const analysis = await analyzeSurveyResponses(req.body);
     analysis.confidenceScore = 100 - analysis.confidenceScore;
