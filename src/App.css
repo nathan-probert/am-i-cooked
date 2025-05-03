@@ -231,6 +231,35 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Credit Footer */
+.credit-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  color: white;
+  z-index: 1000;
+}
+
+.credit-footer a {
+  color: #19F0FF;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.credit-footer a:hover,
+.credit-footer a:focus {
+  color: #A6F9FF;
+  text-decoration: underline;
+}
+
+.credit-footer a:active,
+.credit-footer a:visited {
+  color: #10C9E0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar {
