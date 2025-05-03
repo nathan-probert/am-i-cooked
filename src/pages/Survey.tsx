@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Survey.css';
+import { FaHome } from "react-icons/fa";
 
 interface SurveyAnswers {
   [key: string]: string;
@@ -18,7 +19,7 @@ const Survey = () => {
     // Set the selected option for animation and update answers immediately
     setSelectedOption(value);
     setAnswers(prev => ({ ...prev, [question]: value }));
-    
+
     // Wait for animation to complete before advancing
     if (currentQuestionIndex < questions.length - 1) {
       setTimeout(() => {
@@ -38,7 +39,7 @@ const Survey = () => {
     // Check if all questions are answered
     const totalQuestions = questions.length;
     const answeredQuestions = Object.keys(answers).length;
-    
+
     if (answeredQuestions < totalQuestions) {
       setError(`Please answer all questions (${answeredQuestions}/${totalQuestions} answered)`);
       return;
@@ -61,7 +62,8 @@ const Survey = () => {
       }
 
       const data = await response.json();
-      
+      console.log('Survey submission response:', data);
+
       // Navigate to results with the analysis data
       navigate('/results', { state: { analysis: data.analysis } });
     } catch (err) {
@@ -112,7 +114,7 @@ const Survey = () => {
         'Product Management',
         'Any Field'
       ]
-      },
+    },
     {
       id: 'relocation',
       question: 'Are you open to relocation?',
@@ -192,7 +194,7 @@ const Survey = () => {
       id: 'tailoredMaterials',
       question: 'Do you tailor your resume and cover letter for each job application?',
       options: ['Always', 'Sometimes', 'Rarely', 'Never']
-    } ,   
+    },
     {
       id: 'containerization',
       question: 'Are you familiar with containerization (e.g., Docker)?',
@@ -221,27 +223,36 @@ const Survey = () => {
 
   return (
     <div className="survey-page">
+      <button
+        className="home-button"
+        onClick={() => navigate('/')}
+        title="Home"
+        style={{ background: 'transparent', border: 'none' }}
+      >
+        <FaHome />
+      </button>
+
       <h1>Am I Cooked?</h1>
       <p>Answer these questions to find out if you're cooked! 🔥</p>
-      
+
       <div className="progress-bar">
         <div className="progress-fill" style={{ width: `${progress}%` }}></div>
       </div>
       <p className="question-counter">Question {currentQuestionIndex + 1} of {questions.length}</p>
-      
+
       {error && (
         <div className="error-message">
           {error}
         </div>
       )}
-      
+
       <div className="survey-form">
         <div className="question-container">
           <h3>{currentQuestion.question}</h3>
           <div className="options-container">
             {currentQuestion.options.map((option) => (
-              <label 
-                key={option} 
+              <label
+                key={option}
                 className={`option-label ${answers[currentQuestion.id] === option ? 'selected' : ''} ${selectedOption === option ? 'animate' : ''}`}
                 onClick={() => handleChange(currentQuestion.id, option)}
               >
@@ -257,19 +268,19 @@ const Survey = () => {
             ))}
           </div>
         </div>
-        
+
         <div className="navigation-buttons">
           {currentQuestionIndex > 0 && (
-            <button 
+            <button
               className="nav-button"
               onClick={handlePrevious}
             >
               Previous
             </button>
           )}
-          
+
           {isLastQuestion && (
-            <button 
+            <button
               className="nav-button submit-button"
               onClick={handleSubmit}
               disabled={isSubmitting}
