@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaHome } from 'react-icons/fa';
 
 const Resume: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -78,6 +79,15 @@ const Resume: React.FC = () => {
 
   return (
     <div className="page">
+      <button
+        className="home-button"
+        onClick={() => navigate('/')}
+        title="Home"
+        style={{ background: 'transparent', border: 'none' }}
+      >
+        <FaHome />
+      </button>
+
       <div className="upload-container">
         <h1>Resume Upload</h1>
         <p className="upload-description">
