@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Results.css';
 
@@ -11,10 +11,38 @@ interface Analysis {
   confidenceScore: number;
 }
 
+const ScrollIndicator = () => (
+  <div className="scroll-indicator">↓</div>
+);
+
 const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const analysis = location.state?.analysis as Analysis;
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          } else {
+            entry.target.classList.remove('visible');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '-50px'
+      }
+    );
+
+    document.querySelectorAll('.card').forEach(card => {
+      observer.observe(card);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   if (!analysis) {
     return (
@@ -35,61 +63,62 @@ const Results = () => {
 
   return (
     <div className="results-page">
-      <h1>Your Results</h1>
-      
-      <div className="results-container">
-        <div className="status-section">
-          <h2>Status: {analysis.isCooked ? "You're Cooked! 🔥" : "You're Ready! 🚀"}</h2>
-          <div className="cooked-meter">
-            <div 
-              className="cooked-fill"
-              style={{ width: `${cookedScore}%` }}
-            />
-            <span>Cooked Level: {cookedScore}%</span>
           </div>
+          <ScrollIndicator />
         </div>
 
-        <div className="assessment-section">
-          <h3>Overall Assessment</h3>
-          <p>{analysis.overallAssessment}</p>
+        <div className="card assessment-card">
+          <div className="assessment-section">
+            <h3>Overall Assessment</h3>
+            <p>{analysis.overallAssessment}</p>
+          </div>
+          <ScrollIndicator />
         </div>
 
-        <div className="details-section">
-          <div className="strengths">
-            <h3>Key Strengths</h3>
+        <div className="card details-card">
+          <div className="details-section">
+            <div className="strengths">
+              <h3>Key Strengths</h3>
+              <ul>
+                {analysis.strengths.map((strength, index) => (
+                  <li key={index}>{strength}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="improvements">
+              <h3>Areas for Improvement</h3>
+              <ul>
+                {analysis.areasForImprovement.map((area, index) => (
+                  <li key={index}>{area}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <ScrollIndicator />
+        </div>
+
+        <div className="card recommendations-card">
+          <div className="recommendations-section">
+            <h3>Recommendations</h3>
             <ul>
-              {analysis.strengths.map((strength, index) => (
-                <li key={index}>{strength}</li>
+              {analysis.recommendations.map((rec, index) => (
+                <li key={index}>{rec}</li>
               ))}
             </ul>
           </div>
-
-          <div className="improvements">
-            <h3>Areas for Improvement</h3>
-            <ul>
-              {analysis.areasForImprovement.map((area, index) => (
-                <li key={index}>{area}</li>
-              ))}
-            </ul>
-          </div>
+          <ScrollIndicator />
         </div>
 
-        <div className="recommendations-section">
-          <h3>Recommendations</h3>
-          <ul>
-            {analysis.recommendations.map((rec, index) => (
-              <li key={index}>{rec}</li>
-            ))}
-          </ul>
+        <div className="card action-card">
+          <button 
+            className="redirect-button"
+            onClick={() => navigate('/')}
+          >
+            Try Again
+          </button>
         </div>
       </div>
-
-      <button 
-        className="redirect-button"
-        onClick={() => navigate('/')}
-      >
-        Try Again
-      </button>
     </div>
   );
 };
