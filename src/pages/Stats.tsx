@@ -136,7 +136,7 @@ const Stats = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('http://localhost:5000/api/survey/stats');
+        const response = await fetch('https://am-i-cooked-vssc.onrender.com/api/survey/stats');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data: SurveyData[] = await response.json();
         setSurveys(data);
