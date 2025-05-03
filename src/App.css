@@ -64,8 +64,18 @@ body {
 
 .hero h1 {
   font-size: 4.5rem;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sub-header {
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  font-weight: 300;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .button-container {
@@ -258,4 +268,4 @@ body {
   .features-grid {
     grid-template-columns: 1fr;
   }
-} 
+}

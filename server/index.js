@@ -48,12 +48,17 @@ app.post('/api/survey', async (req, res) => {
       throw new Error('Database not connected');
     }
 
-    // Save survey response
-    const surveyResponse = new SurveyResponse(req.body);
-    await surveyResponse.save();
-
     // Analyze responses using Gemini
     const analysis = await analyzeSurveyResponses(req.body);
+    analysis.confidenceScore = 100 - analysis.confidenceScore;
+
+    const surveyData = {
+      ...req.body,
+      cookedPercentage: analysis.confidenceScore,
+    };
+
+    const surveyResponse = new SurveyResponse(surveyData);
+    await surveyResponse.save();
 
     res.status(201).json({
       message: 'Survey response saved successfully',
@@ -79,9 +84,9 @@ app.get('/api/survey/stats', async (req, res) => {
     res.json(surveys);
   } catch (error) {
     console.error('Error fetching statistics:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch statistics',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -89,4 +94,4 @@ app.get('/api/survey/stats', async (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}); 
+});

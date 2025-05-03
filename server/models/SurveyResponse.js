@@ -23,10 +23,11 @@ const surveyResponseSchema = new mongoose.Schema({
   cloud: String,
   deployment: String,
   behavioral: String,
+  cookedPercentage: Number,
   timestamp: {
     type: Date,
     default: Date.now
   }
 });
 
-module.exports = mongoose.model('SurveyResponse', surveyResponseSchema); 
+module.exports = mongoose.model('SurveyResponse', surveyResponseSchema);
