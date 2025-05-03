@@ -281,6 +281,7 @@ async function analyzeSurveyAndResume(responses) {
     **Analysis Task:**
     Based on *both* the resume text and the partial survey answers provided above, return your analysis as valid JSON in the following structure:
 
+    Format the response strictly as JSON with the following structure. Text should only be plain text, no markdown or other formatting. Do not include any additional commentary or explanations outside of the JSON.:
     {
       "isCooked": boolean, // Your assessment: true if cooked, false otherwise
       "overallAssessment": "string", // Your direct feedback to the candidate considering both inputs (2-4 sentences)
@@ -341,7 +342,7 @@ async function analyzeResumeText(resumeText) {
     4. Specific recommendations for enhancing the resume (3 bullet points)
     5. A confidence score (0-100%) representing how well-prepared the candidate *appears* based *only* on this resume.
 
-    Format the response strictly as JSON with the following structure:
+    Format the response strictly as JSON with the following structure. Text should only be plain text, no markdown or other formatting. Do not include any additional commentary or explanations outside of the JSON.:
     {
       "isCooked": boolean,
       "overallAssessment": "string",
@@ -350,6 +351,8 @@ async function analyzeResumeText(resumeText) {
       "recommendations": ["string"],
       "confidenceScore": number
     }
+
+    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
     `;
 
     const result = await model.generateContent(prompt);
