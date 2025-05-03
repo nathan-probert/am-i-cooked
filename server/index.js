@@ -3,7 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const SurveyResponse = require('./models/SurveyResponse');
-const { analyzeSurveyResponses, analyzeResumeText } = require('./services/geminiService');
+// Import the specific functions needed
+const { analyzeFullSurvey, analyzeSurveyAndResume, analyzeResumeText } = require('./services/geminiService');
 
 const app = express();
 
@@ -46,18 +47,27 @@ app.post('/api/survey', async (req, res) => {
   try {
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
-      throw new Error('Database not connected');
+      return res.status(503).json({ error: 'Database not connected. Please try again later.' }); // Use 503 Service Unavailable
     }
 
-    console.log('Received survey response:', req.body);
+    const { resumeText, ...surveyAnswers } = req.body;
+    let analysis;
 
-    // Analyze responses using Gemini
-    const analysis = await analyzeSurveyResponses(req.body);
-    analysis.confidenceScore = 100 - analysis.confidenceScore;
+    // Determine which analysis function to call
+    if (resumeText && typeof resumeText === 'string' && resumeText.trim() !== '') {
+      console.log('Analyzing survey with resume text...');
+      // Call the function for combined analysis
+      analysis = await analyzeSurveyAndResume({ ...surveyAnswers, resumeText });
+    } else {
+      console.log('Analyzing full survey without resume text...');
+      // Call the function for full survey analysis
+      analysis = await analyzeFullSurvey(surveyAnswers); // Pass only survey answers
+    }
 
     const surveyData = {
-      ...req.body,
-      cookedPercentage: analysis.confidenceScore,
+      ...req.body, // Save the original request body (including resumeText if present)
+      cookedPercentage: analysis.cookedPercentage, // Save the calculated cooked percentage
+      analysisDetails: analysis // Optionally save the full analysis object
     };
 
     const surveyResponse = new SurveyResponse(surveyData);
@@ -65,14 +75,25 @@ app.post('/api/survey', async (req, res) => {
 
     res.status(201).json({
       message: 'Survey response saved successfully',
-      analysis
+      analysis // Return the analysis object from Gemini
     });
   } catch (error) {
     console.error('Error processing survey:', error);
-    res.status(500).json({
-      error: 'Failed to process survey',
-      details: error.message
-    });
+    // Check if the error is from Gemini parsing or analysis
+    if (error.message.includes('Failed to parse analysis results') || error.message.includes('Error analyzing')) {
+      res.status(500).json({
+        error: 'Failed to analyze survey data. Could not get results from analysis service.',
+        details: error.message
+      });
+    } else if (error.message.includes('Database not connected')) {
+      res.status(503).json({ error: 'Database not connected. Please try again later.' });
+    }
+    else {
+      res.status(500).json({
+        error: 'Failed to process survey due to an internal server error.',
+        details: error.message // Avoid exposing too many details in production
+      });
+    }
   }
 });
 
@@ -83,14 +104,19 @@ app.get('/api/survey/stats', async (req, res) => {
       throw new Error('Database not connected');
     }
 
-    const surveys = await SurveyResponse.find({}); // Fetch all documents
+    // Select only necessary fields to reduce payload size, exclude analysisDetails by default
+    const surveys = await SurveyResponse.find({}).select('-analysisDetails');
     res.json(surveys);
   } catch (error) {
     console.error('Error fetching statistics:', error);
-    res.status(500).json({
-      error: 'Failed to fetch statistics',
-      details: error.message
-    });
+    if (error.message.includes('Database not connected')) {
+      res.status(503).json({ error: 'Database not connected. Please try again later.' });
+    } else {
+      res.status(500).json({
+        error: 'Failed to fetch statistics',
+        details: error.message
+      });
+    }
   }
 });
 
@@ -125,9 +151,6 @@ app.post('/api/analyze-resume', async (req, res) => {
 
     // Analyze resume text using the new Gemini service function
     const analysis = await analyzeResumeText(resumeText); // Use the new function
-    // The confidence score from the resume analysis might represent preparedness, adjust if needed.
-    // Let's assume higher score = better prepared (less 'cooked')
-    analysis.confidenceScore = 100 - analysis.confidenceScore; // Uncomment if score represents 'cookedness'
 
     res.status(200).json({
       message: 'Resume analyzed successfully',
