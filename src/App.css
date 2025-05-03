@@ -69,6 +69,51 @@ body {
   font-size: 4.5rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  gap: 0.1em;
+}
+
+.trembling-letter {
+  display: inline-block;
+  animation: tremble 0.5s ease-in-out infinite;
+  animation-delay: calc(var(--char-index, 0) * 0.1s);
+}
+
+@keyframes tremble {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(calc(var(--x-offset, -2px)), calc(var(--y-offset, 2px))) rotate(calc(var(--rotation, -1deg)));
+  }
+  50% {
+    transform: translate(calc(var(--x-offset, 2px) * -1), calc(var(--y-offset, -2px))) rotate(calc(var(--rotation, 1deg)));
+  }
+  75% {
+    transform: translate(calc(var(--x-offset, -1px)), calc(var(--y-offset, -1px))) rotate(calc(var(--rotation, -0.5deg)));
+  }
+}
+
+.trembling-letter:nth-child(3n) {
+  --x-offset: -1.5px;
+  --y-offset: 0.5px;
+  --rotation: -1deg;
+  animation-duration: 0.5s;
+}
+
+.trembling-letter:nth-child(3n + 1) {
+  --x-offset: 1px;
+  --y-offset: -1px;
+  --rotation: 0.75deg;
+  animation-duration: 0.55s;
+}
+
+.trembling-letter:nth-child(3n + 2) {
+  --x-offset: -0.5px;
+  --y-offset: 1.5px;
+  --rotation: -0.5deg;
+  animation-duration: 0.45s;
 }
 
 .sub-header {
@@ -101,6 +146,7 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 300px;
+  white-space: nowrap;
 }
 
 .redirect-button:hover {

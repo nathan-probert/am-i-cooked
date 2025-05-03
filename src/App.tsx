@@ -9,11 +9,18 @@ import Footer from './components/Footer'
 // Separate component for the home page content
 const Home = () => {
   const navigate = useNavigate();
+  const title = "Am I Cooked?";
 
   return (
     <div className="hero">
       <div className="hero-content">
-        <h1>Am I Cooked?</h1>
+        <h1>
+          {title.split('').map((char, index) => (
+            <span key={index} className="trembling-letter">
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
+        </h1>
         <p className="sub-header">Find out how realistic (or unrealistic!) your career goals are!</p>
         <div className="button-container">
           <button

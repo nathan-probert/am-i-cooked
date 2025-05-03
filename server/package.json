@@ -17,6 +17,7 @@
     "express": "^4.18.2",
     "mongoose": "^7.1.0",
     "nodeman": "^1.1.2",
+    "parse-pdf": "^2.0.0",
     "pdf-parse": "^1.1.1"
   },
   "devDependencies": {
