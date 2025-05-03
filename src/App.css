@@ -246,6 +246,12 @@ body {
   z-index: 1000;
 }
 
+/* Stats page footer - not fixed */
+.stats-page .credit-footer {
+  position: relative;
+  margin-top: 2rem;
+}
+
 .credit-footer a {
   color: #19F0FF;
   text-decoration: none;
