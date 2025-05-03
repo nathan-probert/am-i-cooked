@@ -4,6 +4,7 @@ import Survey from './pages/Survey'
 import Resume from './pages/Resume'
 import Results from './pages/Results'
 import Stats from './pages/Stats'
+import Footer from './components/Footer'
 
 // Separate component for the home page content
 const Home = () => {
@@ -35,6 +36,7 @@ const Home = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

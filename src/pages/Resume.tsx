@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 
-const Resume = () => {
+const Resume: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="page">
+    <div className="resume-page">
       <h1>Resume Upload</h1>
       <p>Upload your resume to find out if you're cooked!</p>
       <button 
@@ -14,8 +15,9 @@ const Resume = () => {
       >
         Analyze Resume
       </button>
+      <Footer />
     </div>
   );
 };
 
-export default Resume; 
+export default Resume;

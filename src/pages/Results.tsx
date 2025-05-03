@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Results.css';
+import Footer from '../components/Footer';
 
 interface Analysis {
   isCooked: boolean;
@@ -156,8 +157,9 @@ const Results = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
 
-export default Results; 
+export default Results;
