@@ -6,7 +6,32 @@
     background: linear-gradient(135deg, #6e8efb, #a777e3);
     color: white;
     padding: 2rem;
-    /* Removed flex display to allow natural flow */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 100vh;
+    /* Adjust as needed */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+
+.stats-page::-webkit-scrollbar {
+    width: 8px;
+}
+
+.stats-page::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.stats-page::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    margin-bottom: 2rem;
 }
 
 .stats-page h1 {
@@ -188,6 +213,7 @@
     gap: 2rem;
     padding: 1rem;
     width: 100%;
+    margin-bottom: auto; /* Push content up */
 }
 
 .category-card {
@@ -461,28 +487,6 @@
     min-width: 60px;
     text-align: right;
     color: white;
-}
-
-/* Add scrollbar styling consistent with Survey.css */
-.stats-page {
-    overflow-y: auto;
-    max-height: 100vh;
-    /* Adjust as needed */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
-}
-
-.stats-page::-webkit-scrollbar {
-    width: 8px;
-}
-
-.stats-page::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.stats-page::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
 }
 
 /* Responsive design adjustments */
