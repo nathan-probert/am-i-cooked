@@ -36,6 +36,7 @@ server/.env
 *.pem
 .env.backup
 .env.save
+server/.env
 
 # Node dependencies
 node_modules/
