@@ -1,20 +1,55 @@
+import React, { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
 import './App.css'
 import Survey from './pages/Survey'
 import Resume from './pages/Resume'
 import Results from './pages/Results'
 import Stats from './pages/Stats'
+import EasterEgg from './pages/EasterEgg'
 import Footer from './components/Footer'
 
 // Separate component for the home page content
 const Home = () => {
   const navigate = useNavigate();
+  const title = "Am I Cooked?";
+  const [secretClicks, setSecretClicks] = useState(0);
+
+  const handleSecretClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent any default behavior
+    const newClicks = secretClicks + 1;
+    setSecretClicks(newClicks);
+    
+    if (newClicks === 5) {
+      navigate('/easter-egg');
+      setSecretClicks(0);
+    }
+  };
 
   return (
     <div className="hero">
       <div className="hero-content">
-        <h1>Am I Cooked?</h1>
-        <p className="sub-header">Find out how realistic (or unrealistic!) your career goals are!</p>
+        <h1>
+          {title.split('').map((char, index) => (
+            <span key={index} className="trembling-letter">
+              {char === ' ' ? '\u00A0' : char}
+            </span>
+          ))}
+        </h1>
+        <p className="sub-header">
+          Find out how realistic (or{' '}
+          <span 
+            onClick={handleSecretClick}
+            style={{ 
+              cursor: 'default',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none'
+            }}
+          >
+            unrealistic!
+          </span>) your career goals are!
+        </p>
         <div className="button-container">
           <button
             className="redirect-button"
@@ -51,6 +86,7 @@ function App() {
           <Route path="/resume" element={<Resume />} />
           <Route path="/results" element={<Results />} />
           <Route path="/stats" element={<Stats />} />
+          <Route path="/easter-egg" element={<EasterEgg />} />
         </Routes>
       </div>
     </Router>
