@@ -75,8 +75,8 @@ app.get('/api/survey/stats', async (req, res) => {
       throw new Error('Database not connected');
     }
 
-    const totalResponses = await SurveyResponse.countDocuments();
-    res.json({ totalResponses });
+    const surveys = await SurveyResponse.find({}); // Fetch all documents
+    res.json(surveys);
   } catch (error) {
     console.error('Error fetching statistics:', error);
     res.status(500).json({ 

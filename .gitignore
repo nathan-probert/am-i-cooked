@@ -30,9 +30,21 @@ dist-ssr
 .env.test
 .env.production
 .env*.local
+server/.env
 
 # Other sensitive information
 *.pem
 .env.backup
 .env.save
 server/.env
+
+# Node dependencies
+node_modules/
+
+# Build artifacts
+dist/
+.next/
+
+# OS generated files
+.DS_Store
+Thumbs.db
