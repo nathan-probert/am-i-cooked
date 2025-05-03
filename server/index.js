@@ -8,7 +8,23 @@ const { analyzeSurveyResponses } = require('./services/geminiService');
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'https://am-i-cooked-vscw-ar3tn1k7n-proby-8s-projects.vercel.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.json());
 
 // MongoDB Connection with retry logic
