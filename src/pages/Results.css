@@ -1,11 +1,10 @@
 .results-page {
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(135deg, #6e8efb, #a777e3);
   color: white;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
 .results-page h1 {
@@ -30,8 +29,175 @@
 }
 
 .status-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+  color: #ff6b6b;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.status-section h2::before,
+.status-section h2::after {
+  content: '🔥';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 2rem;
-  margin-bottom: 1rem;
+  animation: flame-dance 1.5s ease-in-out infinite;
+}
+
+.status-section h2::before {
+  left: -2.5rem;
+}
+
+.status-section h2::after {
+  right: -2.5rem;
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(255, 107, 107, 0.5),
+      0 0 20px rgba(255, 107, 107, 0.3),
+      0 0 30px rgba(255, 107, 107, 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(255, 107, 107, 0.8),
+      0 0 30px rgba(255, 107, 107, 0.5),
+      0 0 40px rgba(255, 107, 107, 0.3);
+  }
+}
+
+@keyframes flame-dance {
+  0%, 100% {
+    transform: translateY(-50%) rotate(-5deg) scale(1);
+  }
+  25% {
+    transform: translateY(-60%) rotate(5deg) scale(1.1);
+  }
+  50% {
+    transform: translateY(-50%) rotate(0deg) scale(1);
+  }
+  75% {
+    transform: translateY(-40%) rotate(-5deg) scale(0.9);
+  }
+}
+
+.doneness-scale {
+  width: 100%;
+  max-width: 1000px;
+  margin: 3rem auto;
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.scale-segments {
+  display: flex;
+  width: 100%;
+  height: 80px;
+  gap: 6px;
+  padding: 0 2px;
+}
+
+.segment {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 12px 6px;
+  transition: all 0.3s ease;
+}
+
+.segment:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 25px 10px rgba(255, 0, 0, 0.6);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.segment.raw {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.segment.rare {
+  background: #ffe169;
+}
+
+.segment.medium-rare {
+  background: #ff9b50;
+}
+
+.segment.medium {
+  background: #ff6b6b;
+}
+
+.segment.medium-well {
+  background: #cd4631;
+}
+
+.segment.well-done {
+  background: #8b4513;
+}
+
+.segment.burnt {
+  background: #2c1810;
+}
+
+.segment.burnt::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(
+    to top,
+    rgba(255, 107, 107, 0.2),
+    transparent
+  );
+  animation: ember-glow 2s ease-in-out infinite;
+}
+
+@keyframes ember-glow {
+  0%, 100% {
+    opacity: 0.3;
+    height: 30%;
+  }
+  50% {
+    opacity: 0.6;
+    height: 40%;
+  }
+}
+
+.scale-pointer {
+  position: absolute;
+  bottom: -5px;
+  transform: translateX(-50%);
+  color: black;
+  font-size: 2.5rem;
+  z-index: 2;
+  text-shadow: none;
+  transition: left 1s ease-in-out;
+}
+
+.doneness-level {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: inline-block;
+  font-weight: 500;
 }
 
 .confidence-meter {
@@ -109,19 +275,144 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.cards-container {
+  height: 100%;
+}
+
+.card {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+}
+
+.card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card > div {
+  max-width: 800px;
+  width: 100%;
+}
+
+.meter-card {
+  text-align: center;
+}
+
+.meter-card h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.assessment-card .assessment-section {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+}
+
+.assessment-card h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.assessment-card p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.details-card .details-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.recommendations-card .recommendations-section {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+}
+
+.recommendations-card h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.recommendations-card ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: left;
+}
+
+.recommendations-card li {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.action-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 3rem;
+  animation: bounce 2s infinite;
+  opacity: 0.8;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-15px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-7px);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-  .results-page {
+  .card {
     padding: 1rem;
   }
 
-  .results-container {
-    padding: 1rem;
+  .meter-card h1 {
+    font-size: 2rem;
   }
 
-  .details-section {
+  .details-card .details-section {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  .assessment-card h3,
+  .recommendations-card h3 {
+    font-size: 1.5rem;
   }
 
   .status-section h2 {
