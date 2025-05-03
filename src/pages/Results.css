@@ -97,7 +97,7 @@
 .doneness-scale {
   width: 100%;
   max-width: 1000px;
-  margin: 3rem auto;
+  margin: 3rem auto 1rem;
   position: relative;
   padding-bottom: 1.5rem;
 }
@@ -106,8 +106,9 @@
   display: flex;
   width: 100%;
   height: 80px;
-  gap: 6px;
-  padding: 0 2px;
+  gap: 12px;
+  padding: 0 15px;
+  margin: 0;
 }
 
 .segment {
@@ -123,10 +124,14 @@
   border-radius: 12px;
   padding: 12px 6px;
   transition: all 0.3s ease;
+  text-align: center;
+  word-break: break-word;
+  hyphens: auto;
+  margin: 0 5px;
 }
 
 .segment:hover {
-  transform: scale(1.25);
+  transform: scale(1.15);
   box-shadow: 0 0 25px 10px rgba(255, 0, 0, 0.6);
   z-index: 1;
   cursor: pointer;
@@ -190,7 +195,7 @@
 
 .scale-pointer {
   position: absolute;
-  bottom: -5px;
+  bottom: -15px;
   transform: translateX(-50%);
   color: black;
   font-size: 2.5rem;
@@ -201,7 +206,7 @@
 
 .doneness-level {
   font-size: 1.2rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -438,5 +443,38 @@
 
   .results-page h1 {
     font-size: 2rem;
+  }
+
+  .scale-segments {
+    flex-direction: column;
+    height: auto;
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .segment {
+    font-size: 1rem;
+    padding: 8px;
+    margin: 0 15px;
+  }
+
+  .segment:hover {
+    transform: scale(1.05);
+  }
+
+  .segment.active {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px 5px rgba(255, 0, 0, 0.4);
+    margin: 0 15px;
+  }
+
+  .scale-pointer {
+    display: none;
+  }
+
+  .doneness-level {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
   }
 }

@@ -68,13 +68,13 @@ const Results = () => {
             <h2>Cooked-O-Meter</h2>
             <div className="doneness-scale">
               <div className="scale-segments">
-                <div className="segment raw">Raw</div>
-                <div className="segment rare">Rare</div>
-                <div className="segment medium-rare">Med Rare</div>
-                <div className="segment medium">Medium</div>
-                <div className="segment medium-well">Med Well</div>
-                <div className="segment well-done">Well Done</div>
-                <div className="segment burnt">Burnt</div>
+                <div className={`segment raw ${analysis.confidenceScore < 25 ? 'active' : ''}`}>Raw</div>
+                <div className={`segment rare ${analysis.confidenceScore >= 25 && analysis.confidenceScore < 40 ? 'active' : ''}`}>Rare</div>
+                <div className={`segment medium-rare ${analysis.confidenceScore >= 40 && analysis.confidenceScore < 55 ? 'active' : ''}`}>Med Rare</div>
+                <div className={`segment medium ${analysis.confidenceScore >= 55 && analysis.confidenceScore < 70 ? 'active' : ''}`}>Medium</div>
+                <div className={`segment medium-well ${analysis.confidenceScore >= 70 && analysis.confidenceScore < 85 ? 'active' : ''}`}>Med Well</div>
+                <div className={`segment well-done ${analysis.confidenceScore >= 85 && analysis.confidenceScore < 95 ? 'active' : ''}`}>Well Done</div>
+                <div className={`segment burnt ${analysis.confidenceScore >= 95 ? 'active' : ''}`}>Burnt</div>
               </div>
               <div
                 className="scale-pointer"
