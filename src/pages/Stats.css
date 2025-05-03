@@ -360,6 +360,9 @@
     align-items: center;
     padding: 2rem;
     color: white;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    justify-content: center;
 }
 
 .spinner {
@@ -369,6 +372,7 @@
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
 }
 
 @keyframes spin {
