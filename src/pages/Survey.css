@@ -56,6 +56,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-label.selected {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .option-label:hover {
@@ -68,6 +74,10 @@
 
 .option-label span {
   font-size: 1rem;
+}
+
+.option-label.animate {
+  animation: selectPulse 0.3s ease-out;
 }
 
 .submit-button {
@@ -204,4 +214,19 @@
     opacity: 1;
     transform: translateY(0);
   }
-} 
+}
+
+@keyframes selectPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
