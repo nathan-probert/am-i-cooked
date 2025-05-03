@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FaHome } from 'react-icons/fa';
 import './Results.css';
 
 interface Analysis {
@@ -86,6 +87,14 @@ Try the Cooked-O-Meter here: https://am-i-cooked-zeta.vercel.app/`;
 
   return (
     <div className="results-page">
+      <button
+        className="home-button"
+        onClick={() => navigate('/')}
+        title="Home"
+        style={{ background: 'transparent', border: 'none' }}
+      >
+        <FaHome />
+      </button>
       <div className="cards-container">
         <div className="card meter-card">
           <h1>Your Results</h1>
