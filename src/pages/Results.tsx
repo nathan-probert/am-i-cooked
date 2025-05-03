@@ -31,6 +31,8 @@ const Results = () => {
     );
   }
 
+  const cookedScore = 100 - analysis.confidenceScore;
+
   return (
     <div className="results-page">
       <h1>Your Results</h1>
@@ -38,12 +40,12 @@ const Results = () => {
       <div className="results-container">
         <div className="status-section">
           <h2>Status: {analysis.isCooked ? "You're Cooked! 🔥" : "You're Ready! 🚀"}</h2>
-          <div className="confidence-meter">
+          <div className="cooked-meter">
             <div 
-              className="confidence-fill"
-              style={{ width: `${analysis.confidenceScore}%` }}
+              className="cooked-fill"
+              style={{ width: `${cookedScore}%` }}
             />
-            <span>Confidence: {analysis.confidenceScore}%</span>
+            <span>Cooked Level: {cookedScore}%</span>
           </div>
         </div>
 

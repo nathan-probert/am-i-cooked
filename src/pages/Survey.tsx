@@ -9,11 +9,25 @@ interface SurveyAnswers {
 const Survey = () => {
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<SurveyAnswers>({});
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (question: string, value: string) => {
     setAnswers(prev => ({ ...prev, [question]: value }));
+    
+    // Automatically advance to next question if not on the last question
+    if (currentQuestionIndex < questions.length - 1) {
+      setError(null);
+      setTimeout(() => {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }, 300); // Small delay to show the selection before moving
+    }
+  };
+
+  const handlePrevious = () => {
+    setError(null);
+    setCurrentQuestionIndex(prev => prev - 1);
   };
 
   const handleSubmit = async () => {
@@ -58,22 +72,22 @@ const Survey = () => {
     {
       id: 'jobType',
       question: 'What type of job are you looking for?',
-      options: ['Full-time', 'Part-time', 'Internship', 'Contract', 'Remote']
+      options: ['Full-time', 'Part-time', 'Internship', 'Contract']
     },
     {
       id: 'salary',
       question: 'What are your salary expectations?',
-      options: ['$0-40k', '$40-60k', '$60-80k', '$80-100k', '$100k+']
+      options: ['$0-40k', '$40-80k', '$80-120k', '$120-160k', '$160k-200k', '200k+']
     },
     {
       id: 'location',
       question: 'What is your preferred location of work?',
-      options: ['On-site', 'Hybrid', 'Remote', 'Flexible']
+      options: ['On-site', 'Hybrid', 'Remote', 'Any']
     },
     {
-      id: 'companySize',
-      question: 'What size of company do you prefer?',
-      options: ['Startup (<50)', 'Small (50-200)', 'Medium (201-1000)', 'Large (1000+)']
+      id: 'debuggingStyle',
+      question: 'What’s your debugging style?',
+      options: ['Rubber duck', 'Print statements', 'Stack Overflow', 'ChatGPT', 'Give Up']
     },
     {
       id: 'hours',
@@ -83,8 +97,18 @@ const Survey = () => {
     {
       id: 'industry',
       question: 'What is your preferred field or industry?',
-      options: ['Software Development', 'Data Science', 'DevOps', 'Cloud Computing', 'Cybersecurity', 'Other']
-    },
+      options: [
+        'Web Development',
+        'Backend Development',
+        'Mobile Development',
+        'Data Science',
+        'Machine Learning',
+        'DevOps Engineering',
+        'Cybersecurity',
+        'Product Management',
+        'Any Field'
+      ]
+      },
     {
       id: 'relocation',
       question: 'Are you open to relocation?',
@@ -93,12 +117,17 @@ const Survey = () => {
     {
       id: 'startTime',
       question: 'How soon are you looking to start working?',
-      options: ['Immediately', '2 weeks', '1 month', '2-3 months', '3+ months']
+      options: ['Immediately', '4 months', '1 year', '2-3 years', '3+ years']
     },
     {
       id: 'internships',
-      question: 'How many internships or co-op terms have you completed?',
-      options: ['0', '1', '2', '3', '4+']
+      question: 'How many internships or co-op terms (4 months each) have you completed?',
+      options: ['0', '1', '2', '3', '4', '5+']
+    },
+    {
+      id: 'keyboardPreference',
+      question: 'What kind of keyboard do you use?',
+      options: ['Mechanical with RGB', 'Laptop keyboard gang', 'Whatever came with the job', 'What’s a keyboard?']
     },
     {
       id: 'projects',
@@ -116,9 +145,14 @@ const Survey = () => {
       options: ['Yes, multiple', 'Yes, one or two', 'No, but planning to', 'No']
     },
     {
+      id: 'rejectionReaction',
+      question: 'What do you do after getting a job rejection?',
+      options: ['Apply to 10 more', 'Cry a little', 'Make it a LinkedIn post', 'Didn’t want the job anyway']
+    },
+    {
       id: 'leetcode',
       question: 'How many Leetcode problems have you completed?',
-      options: ['0', '1-50', '51-200', '201-500', '500+']
+      options: ['0', '1-25', '26-50', '51-100', '101-200', '200+']
     },
     {
       id: 'versionControl',
@@ -127,8 +161,18 @@ const Survey = () => {
     },
     {
       id: 'education',
-      question: 'What is the highest level of education you have completed?',
-      options: ['High School', 'Some College', 'Bachelors', 'Masters', 'PhD']
+      question: 'What is the highest level of education you have completed or in progress?',
+      options: [
+        'High School or Equivalent',
+        'Bachelor’s Degree',
+        'Master’s Degree',
+        'Doctorate (PhD or similar)'
+      ]
+    },
+    {
+      id: 'resumeTruth',
+      question: 'Be honest… how “real” is your resume?',
+      options: ['100% truthful', 'Mildly exaggerated', 'Built by ChatGPT', 'Submitted the template']
     },
     {
       id: 'gpa',
@@ -138,27 +182,27 @@ const Survey = () => {
     {
       id: 'applications',
       question: 'How many jobs do you apply to in a week on average?',
-      options: ['0-5', '6-10', '11-20', '21-30', '30+']
+      options: ['0-10', '11-25', '26-50', '51-100', '101-200', '200+']
     },
     {
-      id: 'tailoredResume',
-      question: 'Do you tailor your resume to each job you apply for?',
+      id: 'tailoredMaterials',
+      question: 'Do you tailor your resume and cover letter for each job application?',
       options: ['Always', 'Sometimes', 'Rarely', 'Never']
-    },
+    } ,   
     {
       id: 'containerization',
       question: 'Are you familiar with containerization (e.g., Docker)?',
       options: ['Yes, expert', 'Yes, intermediate', 'Yes, beginner', 'No']
     },
     {
+      id: 'workspaceVibe',
+      question: 'What’s your ideal work setup?',
+      options: ['Standing desk and diffuser', 'Bed + laptop', 'Two monitors minimum', 'Wherever the Wi-Fi works']
+    },
+    {
       id: 'cloud',
       question: 'Are you familiar with any cloud platforms (e.g., AWS, Azure, GCP)?',
       options: ['Yes, certified', 'Yes, experienced', 'Yes, beginner', 'No']
-    },
-    {
-      id: 'deployment',
-      question: 'Are you familiar with deployment processes?',
-      options: ['Yes, expert', 'Yes, intermediate', 'Yes, beginner', 'No']
     },
     {
       id: 'behavioral',
@@ -167,10 +211,19 @@ const Survey = () => {
     }
   ];
 
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+
   return (
     <div className="survey-page">
-      <h1>Career Readiness Survey</h1>
+      <h1>Am I Cooked?</h1>
       <p>Answer these questions to find out if you're cooked! 🔥</p>
+      
+      <div className="progress-bar">
+        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+      </div>
+      <p className="question-counter">Question {currentQuestionIndex + 1} of {questions.length}</p>
       
       {error && (
         <div className="error-message">
@@ -178,35 +231,46 @@ const Survey = () => {
         </div>
       )}
       
-      <form className="survey-form" onSubmit={(e) => e.preventDefault()}>
-        {questions.map((q) => (
-          <div key={q.id} className="question-container">
-            <h3>{q.question}</h3>
-            <div className="options-container">
-              {q.options.map((option) => (
-                <label key={option} className="option-label">
-                  <input
-                    type="radio"
-                    name={q.id}
-                    value={option}
-                    checked={answers[q.id] === option}
-                    onChange={(e) => handleChange(q.id, e.target.value)}
-                  />
-                  <span>{option}</span>
-                </label>
-              ))}
-            </div>
+      <div className="survey-form">
+        <div className="question-container">
+          <h3>{currentQuestion.question}</h3>
+          <div className="options-container">
+            {currentQuestion.options.map((option) => (
+              <label key={option} className="option-label">
+                <input
+                  type="radio"
+                  name={currentQuestion.id}
+                  value={option}
+                  checked={answers[currentQuestion.id] === option}
+                  onChange={(e) => handleChange(currentQuestion.id, e.target.value)}
+                />
+                <span>{option}</span>
+              </label>
+            ))}
           </div>
-        ))}
+        </div>
         
-        <button 
-          className="redirect-button submit-button"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit Survey'}
-        </button>
-      </form>
+        <div className="navigation-buttons">
+          {currentQuestionIndex > 0 && (
+            <button 
+              className="nav-button"
+              onClick={handlePrevious}
+            >
+              Previous
+            </button>
+          )}
+          
+          {isLastQuestion && (
+            <button 
+              className="nav-button submit-button"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Survey'}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
