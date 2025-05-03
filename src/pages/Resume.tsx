@@ -28,7 +28,7 @@ const Resume: React.FC = () => {
       const base64 = (reader.result as string).split(',')[1];
 
       try {
-        const response = await fetch('http://localhost:5000/api/parse-pdf', {
+        const response = await fetch('https://am-i-cooked-vssc.onrender.com/api/parse-pdf', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file: base64 }),
