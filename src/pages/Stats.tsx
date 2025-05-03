@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaHome } from 'react-icons/fa';
 import './Stats.css';
 
 interface SurveyData {
@@ -45,6 +47,7 @@ const Stats = () => {
   const [surveys, setSurveys] = useState<SurveyData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const fieldCategories = [
     {
@@ -189,6 +192,14 @@ const Stats = () => {
 
   return (
     <div className="stats-page">
+      <button
+        className="home-button"
+        onClick={() => navigate('/')}
+        title="Home"
+        style={{ background: 'transparent', border: 'none' }}
+      >
+        <FaHome />
+      </button>
       <div className="content">
         <header className="stats-header">
           <h1>📊 Survey Statistics</h1>
