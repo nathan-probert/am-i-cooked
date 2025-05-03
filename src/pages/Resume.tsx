@@ -39,20 +39,12 @@ const Resume: React.FC = () => {
           throw new Error(data.message || 'Failed to parse PDF');
         }
 
-        const resultResponse = await fetch('http://localhost:5000/api/analyze-resume', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ resumeText: data.text }),
-        });
-        const resultData = await resultResponse.json();
+        // Navigate to Survey page with resume text instead of analyzing here
+        navigate('/survey', { state: { resumeText: data.text } });
 
-        if (!resultResponse.ok) {
-          throw new Error(resultData.message || 'Failed to analyze resume');
-        }
-
-        navigate('/results', { state: { analysis: resultData.analysis } });
       } catch (error) {
         console.error('Error sending PDF:', error);
+        // Keep the alert specific to parsing failure
         alert('Failed to parse PDF');
       } finally {
         setLoading(false);

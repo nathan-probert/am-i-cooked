@@ -78,8 +78,11 @@ const Stats = () => {
 
   const getFieldDistribution = (field: keyof SurveyData): FrequencyData => {
     return surveys.reduce((acc, survey) => {
-      const value = survey[field] || 'N/A';
-      acc[value] = (acc[value] || 0) + 1;
+      const value = survey[field];
+      // Check if the value is not null, undefined, or an empty string
+      if (value !== null && value !== undefined && value !== '') {
+        acc[value] = (acc[value] || 0) + 1;
+      }
       return acc;
     }, {} as FrequencyData);
   };
@@ -95,14 +98,17 @@ const Stats = () => {
 
     surveys.forEach(survey => {
       const percent = survey.cookedPercentage;
-      if (percent <= 25) {
-        ranges['Not Cooked (0-25%)']++;
-      } else if (percent <= 50) {
-        ranges['Lightly Cooked (26-50%)']++;
-      } else if (percent <= 75) {
-        ranges['Medium Cooked (51-75%)']++;
-      } else {
-        ranges['Well Cooked (76-100%)']++;
+      // Ensure cookedPercentage is a valid number before categorizing
+      if (typeof percent === 'number' && !isNaN(percent)) {
+        if (percent <= 25) {
+          ranges['Not Cooked (0-25%)']++;
+        } else if (percent <= 50) {
+          ranges['Lightly Cooked (26-50%)']++;
+        } else if (percent <= 75) {
+          ranges['Medium Cooked (51-75%)']++;
+        } else {
+          ranges['Well Cooked (76-100%)']++;
+        }
       }
     });
 
@@ -113,12 +119,16 @@ const Stats = () => {
   const calculateStats = () => {
     if (!surveys.length) return { avgCooked: 0, minCooked: 0, maxCooked: 0 };
 
-    const cookedValues = surveys.map(s => s.cookedPercentage).filter(val => val !== undefined);
+    const cookedValues = surveys
+      .map(s => s.cookedPercentage)
+      .filter(val => typeof val === 'number' && !isNaN(val)); // Ensure only valid numbers are considered
+
+    if (!cookedValues.length) return { avgCooked: 0, minCooked: 0, maxCooked: 0 };
 
     const sum = cookedValues.reduce((acc, val) => acc + val, 0);
-    const avg = cookedValues.length ? sum / cookedValues.length : 0;
-    const min = cookedValues.length ? Math.min(...cookedValues) : 0;
-    const max = cookedValues.length ? Math.max(...cookedValues) : 0;
+    const avg = sum / cookedValues.length;
+    const min = Math.min(...cookedValues);
+    const max = Math.max(...cookedValues);
 
     return {
       avgCooked: avg,
@@ -163,6 +173,24 @@ const Stats = () => {
       <button className="retry-button" onClick={() => window.location.reload()}>Retry</button>
     </div>
   );
+
+  // Handle case where there are no surveys after loading
+  if (!isLoading && surveys.length === 0 && !error) return (
+    <div className="stats-page">
+      <div className="content">
+        <header className="stats-header">
+          <h1>📊 Survey Statistics</h1>
+          <button className="back-button" onClick={() => navigate('/')}>
+            ← Back to Home
+          </button>
+        </header>
+        <div className="no-data-message">
+          <p>No survey data available yet.</p>
+        </div>
+      </div>
+    </div>
+  );
+
 
   return (
     <div className="stats-page">
@@ -210,6 +238,11 @@ const Stats = () => {
             {(() => {
               const cookedDistribution = getCookedDistribution();
               const total = Object.values(cookedDistribution).reduce((sum, count) => sum + count, 0);
+
+              if (total === 0) {
+                return <p className="no-data-chart">No data for cooked distribution.</p>;
+              }
+
               let startAngle = 0;
 
               return (
@@ -253,7 +286,7 @@ const Stats = () => {
                         <span className="legend-label">{label}</span>
                         <span className="legend-value">{count} people</span>
                         <span className="legend-percent">
-                          {total > 0 ? (count / total * 100).toFixed(1) : '0'}%
+                          {(count / total * 100).toFixed(1)}%
                         </span>
                       </div>
                     ))}
@@ -275,7 +308,6 @@ const Stats = () => {
                 {category.fields.map((field) => {
                   const data = getFieldDistribution(field as keyof SurveyData);
                   const total = Object.values(data).reduce((sum, count) => sum + count, 0);
-                  let startAngle = 0;
 
                   return (
                     <div key={field} className="field-card">
@@ -284,49 +316,60 @@ const Stats = () => {
                         <span className="response-count">{total} responses</span>
                       </div>
                       <div className="chart-container">
-                        <svg viewBox="0 0 100 100" className="pie-chart">
-                          {Object.entries(data).map(([label, count], index) => {
-                            if (count === 0) return null;
-                            const percentage = count / total;
-                            const endAngle = startAngle + percentage * 2 * Math.PI;
+                        {total === 0 ? (
+                          <p className="no-data-chart">No data for this field.</p>
+                        ) : (
+                          (() => {
+                            let startAngle = 0;
+                            return (
+                              <>
+                                <svg viewBox="0 0 100 100" className="pie-chart">
+                                  {Object.entries(data).map(([label, count], index) => {
+                                    // No need to check count === 0 here as getFieldDistribution filters them
+                                    const percentage = count / total;
+                                    const endAngle = startAngle + percentage * 2 * Math.PI;
 
-                            const x1 = 50 + 40 * Math.cos(startAngle);
-                            const y1 = 50 + 40 * Math.sin(startAngle);
-                            const x2 = 50 + 40 * Math.cos(endAngle);
-                            const y2 = 50 + 40 * Math.sin(endAngle);
+                                    const x1 = 50 + 40 * Math.cos(startAngle);
+                                    const y1 = 50 + 40 * Math.sin(startAngle);
+                                    const x2 = 50 + 40 * Math.cos(endAngle);
+                                    const y2 = 50 + 40 * Math.sin(endAngle);
 
-                            const largeArc = percentage > 0.5 ? 1 : 0;
+                                    const largeArc = percentage > 0.5 ? 1 : 0;
 
-                            const pathData = `M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`;
+                                    const pathData = `M 50 50 L ${x1} ${y1} A 40 40 0 ${largeArc} 1 ${x2} ${y2} Z`;
 
-                            const element = (
-                              <path
-                                key={label}
-                                d={pathData}
-                                fill={colorPalette[index % colorPalette.length]}
-                                stroke="#fff"
-                                strokeWidth="0.5"
-                              />
+                                    const element = (
+                                      <path
+                                        key={label}
+                                        d={pathData}
+                                        fill={colorPalette[index % colorPalette.length]}
+                                        stroke="#fff"
+                                        strokeWidth="0.5"
+                                      />
+                                    );
+
+                                    startAngle = endAngle;
+                                    return element;
+                                  })}
+                                </svg>
+                                <div className="chart-legend">
+                                  {Object.entries(data).map(([label, count], index) => (
+                                    <div key={label} className="legend-item">
+                                      <span
+                                        className="legend-color"
+                                        style={{ backgroundColor: colorPalette[index % colorPalette.length] }}
+                                      ></span>
+                                      <span className="legend-label">{label}</span>
+                                      <span className="legend-percent">
+                                        {(count / total * 100).toFixed(1)}%
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </>
                             );
-
-                            startAngle = endAngle;
-                            return element;
-                          })}
-                        </svg>
-                        <div className="chart-legend">
-                          {Object.entries(data).map(([label, count], index) => (
-                            <div key={label} className="legend-item">
-                              <span
-                                className="legend-color"
-                                style={{ backgroundColor: colorPalette[index % colorPalette.length] }}
-                              ></span>
-                              <span className="legend-label">{label}</span>
-                              <span className="legend-percent">
-                                {(count / total * 100).toFixed(1)}%
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                          })()
+                        )}
                       </div>
                     </div>
                   );
