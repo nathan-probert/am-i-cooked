@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import './Stats.css';
 
 interface SurveyData {
-  _id: string;
+  _id: string; // Assuming the API transforms the MongoDB ObjectId to a string
   jobType: string;
   salary: string;
   location: string;
-  companySize: string;
   hours: string;
   industry: string;
   relocation: string;
@@ -21,14 +20,12 @@ interface SurveyData {
   education: string;
   gpa: string;
   applications: string;
-  tailoredResume: string;
   containerization: string;
   cloud: string;
-  deployment: string;
   behavioral: string;
-  timestamp: string;
-  cookedPercentage: number;
-  __v?: number;
+  timestamp: string; // Assuming the API transforms the MongoDB Date to a string or number
+  cookedPercentage: number; // Assuming the API extracts the number from the object
+  __v?: number; // Assuming the API extracts the number from the object
 }
 
 const formatLabel = (key: string): string => {
@@ -55,12 +52,12 @@ const Stats = () => {
     {
       title: 'Job Details',
       icon: '💼',
-      fields: ['jobType', 'salary', 'companySize', 'industry', 'location']
+      fields: ['jobType', 'salary', 'industry', 'location']
     },
     {
       title: 'Education & Skills',
       icon: '🎓',
-      fields: ['education', 'gpa', 'versionControl', 'containerization', 'cloud', 'deployment']
+      fields: ['education', 'gpa', 'versionControl', 'containerization', 'cloud']
     },
     {
       title: 'Experience & Activities',
@@ -70,7 +67,7 @@ const Stats = () => {
     {
       title: 'Job Search Strategy',
       icon: '🔍',
-      fields: ['applications', 'tailoredResume', 'behavioral', 'relocation']
+      fields: ['applications', 'behavioral', 'relocation']
     },
     {
       title: 'Work Preferences',
