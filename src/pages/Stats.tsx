@@ -125,7 +125,7 @@ const Stats = () => {
     <div className="page stats-page">
       <header className="stats-header">
         <h1 style={{ color: "black" }}>📊 Survey Statistics</h1>
-        <button className="redirect-button" onClick={() => navigate('/')}>
+        <button className="back-button" onClick={() => navigate('/')}>
           ← Back to Home
         </button>
       </header>
