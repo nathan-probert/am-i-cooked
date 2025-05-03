@@ -48,18 +48,21 @@ body {
 
 /* Hero Section */
 .hero {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   text-align: center;
   background: linear-gradient(135deg, #6e8efb, #a777e3);
   color: white;
-  padding: 0 2rem;
+  padding-top: 4rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .hero-content {
   max-width: 800px;
+  margin-top: 2rem;
 }
 
 .hero h1 {
