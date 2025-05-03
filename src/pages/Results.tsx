@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Results.css';
 
@@ -19,8 +19,33 @@ const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const analysis = location.state?.analysis as Analysis;
+  const [showShareMessage, setShowShareMessage] = useState(false);
+
+  const handleShare = () => {
+    // Create a shareable message with the cooked percentage
+    const shareableMessage = `I was ${analysis.confidenceScore}% cooked! 😱😱😱
+Try the Cooked-O-Meter here: https://am-i-cooked-zeta.vercel.app/`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareableMessage).then(() => {
+      setShowShareMessage(true);
+      setTimeout(() => setShowShareMessage(false), 3000);
+    });
+  };
 
   useEffect(() => {
+    // Check if there's data in the URL when the component mounts
+    const searchParams = new URLSearchParams(window.location.search);
+    const data = searchParams.get('data');
+    if (data && !analysis) {
+      try {
+        const decodedAnalysis = JSON.parse(decodeURIComponent(data));
+        location.state = { analysis: decodedAnalysis };
+      } catch (error) {
+        console.error('Error parsing shared data:', error);
+      }
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
@@ -148,12 +173,25 @@ const Results = () => {
         </div>
 
         <div className="card action-card">
-          <button
-            className="redirect-button"
-            onClick={() => navigate('/')}
-          >
-            Try Again
-          </button>
+          <div className="button-group">
+            <button
+              className="redirect-button"
+              onClick={() => navigate('/')}
+            >
+              Try Again
+            </button>
+            <button
+              className="redirect-button share-button"
+              onClick={handleShare}
+            >
+              Share Results
+            </button>
+          </div>
+          {showShareMessage && (
+            <div className="share-message">
+              Link copied to clipboard!
+            </div>
+          )}
         </div>
       </div>
     </div>
