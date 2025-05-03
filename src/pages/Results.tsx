@@ -9,7 +9,7 @@ interface Analysis {
   strengths: string[];
   areasForImprovement: string[];
   recommendations: string[];
-  confidenceScore: number;
+  cookedPercentage: number;
 }
 
 const ScrollIndicator = () => (
@@ -20,13 +20,14 @@ const Results = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const analysis = location.state?.analysis as Analysis;
+  const cookedPercentage = 100 - analysis.cookedPercentage;
   const [showShareMessage, setShowShareMessage] = useState(false);
 
   const handleShare = () => {
     // Create a shareable message with the cooked percentage
-    const shareableMessage = `I was ${analysis.confidenceScore}% cooked! 😱😱😱
+    const shareableMessage = `I was ${cookedPercentage}% cooked! 😱😱😱
 Try the Cooked-O-Meter here: https://am-i-cooked-zeta.vercel.app/`;
-    
+
     // Copy to clipboard
     navigator.clipboard.writeText(shareableMessage).then(() => {
       setShowShareMessage(true);
@@ -102,35 +103,35 @@ Try the Cooked-O-Meter here: https://am-i-cooked-zeta.vercel.app/`;
             <h2>Cooked-O-Meter</h2>
             <div className="doneness-scale">
               <div className="scale-segments">
-                <div className={`segment raw ${analysis.confidenceScore < 25 ? 'active' : ''}`}>Raw</div>
-                <div className={`segment rare ${analysis.confidenceScore >= 25 && analysis.confidenceScore < 40 ? 'active' : ''}`}>Rare</div>
-                <div className={`segment medium-rare ${analysis.confidenceScore >= 40 && analysis.confidenceScore < 55 ? 'active' : ''}`}>Med Rare</div>
-                <div className={`segment medium ${analysis.confidenceScore >= 55 && analysis.confidenceScore < 70 ? 'active' : ''}`}>Medium</div>
-                <div className={`segment medium-well ${analysis.confidenceScore >= 70 && analysis.confidenceScore < 85 ? 'active' : ''}`}>Med Well</div>
-                <div className={`segment well-done ${analysis.confidenceScore >= 85 && analysis.confidenceScore < 95 ? 'active' : ''}`}>Well Done</div>
-                <div className={`segment burnt ${analysis.confidenceScore >= 95 ? 'active' : ''}`}>Burnt</div>
+                <div className={`segment raw ${cookedPercentage < 15 ? 'active' : ''}`}>Raw</div>
+                <div className={`segment rare ${cookedPercentage >= 15 && cookedPercentage < 30 ? 'active' : ''}`}>Rare</div>
+                <div className={`segment medium-rare ${cookedPercentage >= 30 && cookedPercentage < 45 ? 'active' : ''}`}>Med Rare</div>
+                <div className={`segment medium ${cookedPercentage >= 45 && cookedPercentage < 60 ? 'active' : ''}`}>Medium</div>
+                <div className={`segment medium-well ${cookedPercentage >= 60 && cookedPercentage < 75 ? 'active' : ''}`}>Med Well</div>
+                <div className={`segment well-done ${cookedPercentage >= 75 && cookedPercentage < 90 ? 'active' : ''}`}>Well Done</div>
+                <div className={`segment burnt ${cookedPercentage >= 90 ? 'active' : ''}`}>Burnt</div>
               </div>
               <div
                 className="scale-pointer"
                 style={{
-                  left: `${analysis.confidenceScore >= 95 ? 92.86 :
-                    analysis.confidenceScore >= 85 ? 78.57 :
-                      analysis.confidenceScore >= 70 ? 64.29 :
-                        analysis.confidenceScore >= 55 ? 50 :
-                          analysis.confidenceScore >= 40 ? 35.71 :
-                            analysis.confidenceScore >= 25 ? 21.43 :
+                  left: `${cookedPercentage >= 90 ? 92.86 :
+                    cookedPercentage >= 75 ? 78.57 :
+                      cookedPercentage >= 60 ? 64.29 :
+                        cookedPercentage >= 45 ? 50 :
+                          cookedPercentage >= 30 ? 35.71 :
+                            cookedPercentage >= 15 ? 21.43 :
                               7.14}%`
                 }}
               >▲</div>
             </div>
             <p className="doneness-level">
               {
-                analysis.confidenceScore >= 95 ? "You're beyond cooked... might be time for a career pivot. 🔥💀" :
-                  analysis.confidenceScore >= 85 ? "You're done for buddy. Plenty of fish in the sea, but I think you've run out of bait. 🎣❌" :
-                    analysis.confidenceScore >= 70 ? "Pretty cooked. You're not a complete failure... 🥩😅" :
-                      analysis.confidenceScore >= 55 ? "Kind of cooked. I've seen worse, but I've definitely seen better too. 🍖" :
-                        analysis.confidenceScore >= 40 ? "Not too cooked. Plenty of fish in the sea, just give it time. ⏳" :
-                          analysis.confidenceScore >= 25 ? "Not that cooked. Give it a couple days, you'll find a job. 💼" :
+                cookedPercentage >= 90 ? "You're beyond cooked... might be time for a career pivot. 🔥💀" :
+                  cookedPercentage >= 75 ? "You're done for buddy. Plenty of fish in the sea, but I think you've run out of bait. 🎣❌" :
+                    cookedPercentage >= 60 ? "Pretty cooked. You're not a complete failure... 🥩😅" :
+                      cookedPercentage >= 45 ? "Kind of cooked. I've seen worse, but I've definitely seen better too. 🍖" :
+                        cookedPercentage >= 30 ? "Not too cooked. Plenty of fish in the sea, just give it time. ⏳" :
+                          cookedPercentage >= 15 ? "Not that cooked. Give it a couple days, you'll find a job. 💼" :
                             "Buddy get off my site, you'll be fine! 😎"}
             </p>
           </div>
@@ -205,6 +206,6 @@ Try the Cooked-O-Meter here: https://am-i-cooked-zeta.vercel.app/`;
       </div>
     </div>
   );
-};
+}
 
 export default Results;

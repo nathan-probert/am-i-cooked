@@ -145,45 +145,153 @@ const allQuestions = [
   }
 ];
 
-async function analyzeSurveyResponses(responses) {
+const resumeQuestionIds = new Set([
+  'jobType',
+  'salary',
+  'location',
+  'industry',
+  'relocation',
+  'startTime',
+  'hours',
+  'behavioral'
+]);
+
+// Function to analyze responses from the full survey
+async function analyzeFullSurvey(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Updated model
+
+    // Filter out resumeText if it accidentally got passed
+    const surveyOnlyResponses = { ...responses };
+    delete surveyOnlyResponses.resumeText;
 
     const prompt = `
     You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) or not.
-    
+    Provide an honest, constructive assessment speaking directly to the candidate.
+
     **Definitions:**
-    - "Cooked" means clearly underprepared, lacking direction, or not competitive for their desired job.
-    - Treat openness (e.g. selecting "Any" for location or "Any Field") as a strength unless paired with other vague/low-effort answers.
-    - Salary expectations should match experience level.
+    - "Cooked" means clearly underprepared, or not competitive for their desired job.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength.
     - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and strategy (tailored applications, Leetcode, hackathons) to guide your assessment.
     - Use the **Answer Options** below to understand the range of possible responses for each question.
-    
+
     ---
-    
+
     **Survey Questions and Answer Options:**
-    
+
     ${allQuestions.map(q => `- ${q.question}\n  Options: ${q.options.join(', ')}`).join('\n')}
-    
+
     ---
-    
-    Now, analyze the candidate based on their survey answers below. Speak directly to them, and give honest, constructive feedback.
-    
-    Survey Responses:
-    ${Object.entries(responses)
-        .map(([key, value]) => `${key}: ${value}`)
+
+    **Candidate's Survey Responses:**
+    ${Object.entries(surveyOnlyResponses)
+        .map(([key, value]) => {
+          const questionObj = allQuestions.find(q => q.id === key);
+          return questionObj ? `- ${questionObj.question}: ${value}` : `- ${key}: ${value}`; // Include question text for clarity
+        })
         .join('\n')}
-    
-    Return your response as valid JSON in the following structure:
-    
+
+    ---
+
+    **Analysis Task:**
+    Based *only* on the survey answers provided above, return your analysis as valid JSON in the following structure:
+
     {
-      "isCooked": boolean,
-      "overallAssessment": "string",
-      "strengths": ["string", "string", "string"],
-      "areasForImprovement": ["string", "string", "string"],
-      "recommendations": ["string", "string", "string"],
-      "confidenceScore": number
+      "isCooked": boolean, // Your assessment: true if cooked, false otherwise
+      "overallAssessment": "string", // Your direct feedback to the candidate (2-4 sentences)
+      "strengths": ["string", "string", "string"], // 3 key strengths based on survey answers
+      "areasForImprovement": ["string", "string", "string"], // 3 key areas for improvement based on survey answers
+      "recommendations": ["string", "string", "string"], // 3 actionable recommendations
+      "cookedPercentage": number // A score from 0 (totally cooked) to 100 (well-prepared) based *only* on the survey
     }
+
+    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role.
+    `;
+
+    // ... rest of the function remains the same ...
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = await response.text();
+
+    // Attempt to extract JSON from the response text
+    const jsonMatch = text.match(/\{.*\}/s); // More robust regex to find JSON block
+    if (!jsonMatch) {
+      console.error('No JSON found in Gemini response (analyzeFullSurvey):', text);
+      throw new Error('Failed to find analysis results in the expected format.');
+    }
+    const jsonString = jsonMatch[0];
+
+
+    try {
+      return JSON.parse(jsonString);
+    } catch (error) {
+      console.error('Error parsing Gemini response (analyzeFullSurvey):', jsonString);
+      console.error('Original text:', text); // Log original text for debugging
+      throw new Error('Failed to parse analysis results');
+    }
+  } catch (error) {
+    console.error('Error analyzing full survey responses:', error);
+    throw error; // Re-throw the error
+  }
+}
+
+
+// Function to analyze responses from the partial survey AND resume text
+async function analyzeSurveyAndResume(responses) {
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+
+    const { resumeText, ...partialSurveyAnswers } = responses;
+
+    // Filter partialSurveyAnswers to only include those defined in resumeQuestionIds
+    const relevantAnswers = Object.entries(partialSurveyAnswers)
+      .filter(([key]) => resumeQuestionIds.has(key))
+      .reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, {});
+
+    // Get the questions corresponding to the relevant answers
+    const relevantQuestions = allQuestions.filter(q => resumeQuestionIds.has(q.id));
+
+
+    const prompt = `
+    You are a sharp, no-nonsense career advisor. Analyze the candidate's job search readiness based on BOTH their resume text AND their answers to a subset of survey questions. Assess whether the candidate is "cooked" (underprepared) or not. Provide an honest, constructive assessment speaking directly to the candidate.
+
+    **Definitions:**
+    - "Cooked" means clearly underprepared, lacking direction, or not competitive for their desired job based on the combined information.
+    - Consider how the resume substantiates or contradicts the survey answers.
+    - Evaluate the resume for clarity, impact, and relevance to typical CS roles (Software Engineering, Data Science, etc.).
+    - Evaluate the survey answers for realism and alignment with the resume.
+
+    ---
+
+    **Candidate's Resume Text:**
+    --- START RESUME ---
+    ${resumeText}
+    --- END RESUME ---
+
+    ---
+
+    **Candidate's Survey Responses (Subset):**
+    ${relevantQuestions.map(q => `- ${q.question}: ${relevantAnswers[q.id] || 'Not Answered'}`).join('\n')}
+
+    ---
+
+    **Analysis Task:**
+    Based on *both* the resume text and the partial survey answers provided above, return your analysis as valid JSON in the following structure:
+
+    Format the response strictly as JSON with the following structure. Text should only be plain text, no markdown or other formatting. Do not include any additional commentary or explanations outside of the JSON.:
+    {
+      "isCooked": boolean, // Your assessment: true if cooked, false otherwise
+      "overallAssessment": "string", // Your direct feedback to the candidate considering both inputs (2-4 sentences)
+      "strengths": ["string", "string", "string"], // 3 key strengths combining resume and survey insights
+      "areasForImprovement": ["string", "string", "string"], // 3 key areas for improvement combining resume and survey insights
+      "recommendations": ["string", "string", "string"], // 3 actionable recommendations combining resume and survey insights
+      "cookedPercentage": number // A score from 0 (totally cooked) to 100 (well-prepared) based on *both* inputs. 0 means the user will be unlikely to get the specific job they are looking for, and 100 means they will get the specific job they are looking for.
+    }
+
+    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
     `;
 
     const result = await model.generateContent(prompt);
@@ -191,23 +299,31 @@ async function analyzeSurveyResponses(responses) {
     const text = await response.text();
 
     // Attempt to extract JSON from the response text
-    const jsonStart = text.indexOf('{');
-    const jsonEnd = text.lastIndexOf('}') + 1;
-    const jsonString = text.substring(jsonStart, jsonEnd);
+    const jsonMatch = text.match(/\{.*\}/s); // More robust regex to find JSON block
+    if (!jsonMatch) {
+      console.error('No JSON found in Gemini response (analyzeSurveyAndResume):', text);
+      throw new Error('Failed to find analysis results in the expected format.');
+    }
+    const jsonString = jsonMatch[0];
 
     try {
       return JSON.parse(jsonString);
     } catch (error) {
-      console.error('Error parsing Gemini response:', text);
+      console.error('Error parsing Gemini response (analyzeSurveyAndResume):', jsonString);
+      console.error('Original text:', text); // Log original text for debugging
       throw new Error('Failed to parse analysis results');
     }
   } catch (error) {
-    console.error('Error analyzing survey responses:', error);
-    throw error;
+    console.error('Error analyzing survey and resume:', error);
+    throw error; // Re-throw the error
   }
 }
 
+
+// Keep analyzeResumeText if needed for separate resume-only analysis elsewhere,
+// otherwise, it could be removed if analyzeSurveyAndResume covers the combined case.
 async function analyzeResumeText(resumeText) {
+  // ... (keep existing implementation or remove if redundant) ...
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Using a potentially more capable model
 
@@ -226,7 +342,7 @@ async function analyzeResumeText(resumeText) {
     4. Specific recommendations for enhancing the resume (3 bullet points)
     5. A confidence score (0-100%) representing how well-prepared the candidate *appears* based *only* on this resume.
 
-    Format the response strictly as JSON with the following structure:
+    Format the response strictly as JSON with the following structure. Text should only be plain text, no markdown or other formatting. Do not include any additional commentary or explanations outside of the JSON.:
     {
       "isCooked": boolean,
       "overallAssessment": "string",
@@ -235,6 +351,8 @@ async function analyzeResumeText(resumeText) {
       "recommendations": ["string"],
       "confidenceScore": number
     }
+
+    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
     `;
 
     const result = await model.generateContent(prompt);
@@ -262,7 +380,9 @@ async function analyzeResumeText(resumeText) {
   }
 }
 
+
 module.exports = {
-  analyzeSurveyResponses,
-  analyzeResumeText // Add the new function here
+  analyzeFullSurvey, // Renamed function
+  analyzeSurveyAndResume, // New function
+  analyzeResumeText // Keep or remove as needed
 };
