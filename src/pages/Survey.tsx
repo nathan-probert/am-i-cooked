@@ -12,16 +12,20 @@ const Survey = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handleChange = (question: string, value: string) => {
+    // Set the selected option for animation and update answers immediately
+    setSelectedOption(value);
     setAnswers(prev => ({ ...prev, [question]: value }));
     
-    // Automatically advance to next question if not on the last question
+    // Wait for animation to complete before advancing
     if (currentQuestionIndex < questions.length - 1) {
-      setError(null);
       setTimeout(() => {
-        setCurrentQuestionIndex(prev => prev + 1);
-      }, 300); // Small delay to show the selection before moving
+        setSelectedOption(null);
+        setError(null);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }, 300);
     }
   };
 
@@ -236,13 +240,17 @@ const Survey = () => {
           <h3>{currentQuestion.question}</h3>
           <div className="options-container">
             {currentQuestion.options.map((option) => (
-              <label key={option} className="option-label">
+              <label 
+                key={option} 
+                className={`option-label ${answers[currentQuestion.id] === option ? 'selected' : ''} ${selectedOption === option ? 'animate' : ''}`}
+                onClick={() => handleChange(currentQuestion.id, option)}
+              >
                 <input
                   type="radio"
                   name={currentQuestion.id}
                   value={option}
                   checked={answers[currentQuestion.id] === option}
-                  onChange={(e) => handleChange(currentQuestion.id, e.target.value)}
+                  readOnly
                 />
                 <span>{option}</span>
               </label>
@@ -275,4 +283,4 @@ const Survey = () => {
   );
 };
 
-export default Survey; 
+export default Survey;

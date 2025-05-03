@@ -56,6 +56,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-label.selected {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .option-label:hover {
@@ -70,13 +76,17 @@
   font-size: 1rem;
 }
 
+.option-label.animate {
+  animation: selectPulse 0.3s ease-out;
+}
+
 .submit-button {
-  margin-top: 2rem;
-  width: 100%;
-  max-width: 300px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin-top: 0;
+  width: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  display: inline-block;
 }
 
 /* Scrollbar styling */
@@ -182,6 +192,7 @@
   transition: all 0.3s ease;
   min-width: 120px;
   text-align: center;
+  flex: 0 0 auto;
 }
 
 .nav-button:hover {
@@ -204,4 +215,19 @@
     opacity: 1;
     transform: translateY(0);
   }
-} 
+}
+
+@keyframes selectPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
