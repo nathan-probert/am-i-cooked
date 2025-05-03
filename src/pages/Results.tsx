@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Results.css';
-import Footer from '../components/Footer';
 
 interface Analysis {
   isCooked: boolean;
@@ -157,7 +156,6 @@ const Results = () => {
           </button>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

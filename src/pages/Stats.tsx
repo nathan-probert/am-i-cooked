@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Stats.css';
-import Footer from '../components/Footer';
 
 interface SurveyData {
   _id: string;
@@ -340,7 +339,6 @@ const Stats = () => {
           ))}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
