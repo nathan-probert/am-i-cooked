@@ -7,7 +7,7 @@ async function analyzeSurveyResponses(responses) {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
 
     const prompt = `
-    As a career advisor, analyze these job search survey responses and provide a detailed assessment of whether the candidate is "cooked" (unprepared) or not for their job search. Consider their preparation level, experience, and job search strategy.
+    As a career advisor, analyze these job search survey responses and provide a detailed assessment of whether the candidate is "cooked" (unprepared) or not for their job search. Consider their preparation level, experience, and job search strategy. Address the candidate directly in your response.
 
     Survey Responses:
     ${Object.entries(responses)
@@ -15,10 +15,10 @@ async function analyzeSurveyResponses(responses) {
       .join('\n')}
 
     Please provide:
-    1. An overall assessment (are they cooked?)
-    2. Key strengths
-    3. Areas for improvement
-    4. Specific recommendations
+    1. An overall assessment (are they cooked?). Make this very brief (ie. 2 sentences).
+    2. Key strengths (3 bullet points)
+    3. Areas for improvement (3 bullet points)
+    4. Specific recommendations (3 bullet points)
     5. A confidence score (0-100%)
 
     Format the response as JSON with the following structure:

@@ -111,25 +111,26 @@ const Results = () => {
           <ScrollIndicator />
         </div>
 
-        <div className="card details-card">
-          <div className="details-section">
-            <div className="strengths">
-              <h3>Key Strengths</h3>
-              <ul>
-                {analysis.strengths.map((strength, index) => (
-                  <li key={index}>{strength}</li>
-                ))}
-              </ul>
-            </div>
+        <div className="card strengths-card">
+          <div className="strengths-section">
+            <h3>Key Strengths</h3>
+            <ul>
+              {analysis.strengths.map((strength, index) => (
+                <li key={index}>{strength}</li>
+              ))}
+            </ul>
+          </div>
+          <ScrollIndicator />
+        </div>
 
-            <div className="improvements">
-              <h3>Areas for Improvement</h3>
-              <ul>
-                {analysis.areasForImprovement.map((area, index) => (
-                  <li key={index}>{area}</li>
-                ))}
-              </ul>
-            </div>
+        <div className="card improvements-card">
+          <div className="improvements-section">
+            <h3>Areas for Improvement</h3>
+            <ul>
+              {analysis.areasForImprovement.map((area, index) => (
+                <li key={index}>{area}</li>
+              ))}
+            </ul>
           </div>
           <ScrollIndicator />
         </div>

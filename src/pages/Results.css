@@ -380,6 +380,36 @@
   position: relative;
 }
 
+.strengths-section,
+.improvements-section {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.strengths-section h3,
+.improvements-section h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.strengths-section ul,
+.improvements-section ul {
+  text-align: left;
+  list-style-type: none;
+  padding: 0;
+}
+
+.strengths-section li,
+.improvements-section li {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
 .action-card {
   display: flex;
   justify-content: center;
