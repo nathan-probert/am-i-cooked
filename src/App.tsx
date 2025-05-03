@@ -12,22 +12,23 @@ const Home = () => {
   return (
     <div className="hero">
       <div className="hero-content">
-        <h1>Am I Cooked</h1>
+        <h1>Am I Cooked?</h1>
+        <p className="sub-header">Find out how realistic (or unrealistic!) your career goals are!</p>
         <div className="button-container">
-          <button 
-            className="redirect-button" 
+          <button
+            className="redirect-button"
             onClick={() => navigate('/survey')}
           >
             Take the Survey
           </button>
-          <button 
-            className="redirect-button" 
+          <button
+            className="redirect-button"
             onClick={() => navigate('/resume')}
           >
             Upload a Resume
           </button>
-          <button 
-            className="redirect-button stats-button" 
+          <button
+            className="redirect-button stats-button"
             onClick={() => navigate('/stats')}
           >
             View Stats
@@ -54,4 +55,4 @@ function App() {
   );
 }
 
-export default App 
+export default App
