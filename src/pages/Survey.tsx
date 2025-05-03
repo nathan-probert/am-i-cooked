@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Survey.css';
-import Footer from '../components/Footer';
 import { FaHome } from 'react-icons/fa';
 
 interface SurveyAnswers {
@@ -291,7 +290,6 @@ const Survey = () => {
           )}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
