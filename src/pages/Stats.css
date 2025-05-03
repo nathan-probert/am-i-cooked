@@ -10,7 +10,6 @@
     flex-direction: column;
     overflow-y: auto;
     max-height: 100vh;
-    /* Adjust as needed */
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
 }
@@ -40,37 +39,6 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;
     /* Ensure h1 is white */
-}
-
-/* Redirect Button - Enhanced */
-.back-button {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    padding: 0.6rem 1.2rem;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    z-index: 10;
-    margin-right: 1rem;
-    display: inline-block;
-    color: white;
-}
-
-.back-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-.back-button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .stats-header {

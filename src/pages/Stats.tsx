@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Stats.css';
 
 interface SurveyData {
@@ -43,7 +42,6 @@ const colorPalette = [
 ];
 
 const Stats = () => {
-  const navigate = useNavigate();
   const [surveys, setSurveys] = useState<SurveyData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -180,9 +178,6 @@ const Stats = () => {
       <div className="content">
         <header className="stats-header">
           <h1>📊 Survey Statistics</h1>
-          <button className="back-button" onClick={() => navigate('/')}>
-            ← Back to Home
-          </button>
         </header>
         <div className="no-data-message">
           <p>No survey data available yet.</p>
@@ -197,9 +192,6 @@ const Stats = () => {
       <div className="content">
         <header className="stats-header">
           <h1>📊 Survey Statistics</h1>
-          <button className="back-button" onClick={() => navigate('/')}>
-            ← Back to Home
-          </button>
         </header>
 
         <div className="key-metrics">
