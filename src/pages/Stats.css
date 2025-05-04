@@ -38,12 +38,13 @@
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;
-    /* Ensure h1 is white */
+    text-align: center;
+    width: 100%;
 }
 
 .stats-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding-top: 2rem;
 }
