@@ -38,12 +38,13 @@
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;
-    /* Ensure h1 is white */
+    text-align: center;
+    width: 100%;
 }
 
 .stats-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding-top: 2rem;
 }
@@ -464,6 +465,7 @@
 /* Responsive design adjustments */
 @media (max-width: 768px) {
     .stats-page {
+        padding-top: 4rem; /* Add padding to account for fixed home button */
         padding: 1rem;
     }
 
@@ -494,33 +496,44 @@
         /* Adjust size */
         height: 150px;
     }
+
+    .home-button {
+        top: 0.75rem;
+        left: 0.75rem;
+    }
 }
 
 /* Home Button */
 .home-button {
-    position: absolute;
-    top: 1.5rem;
-    left: 1.5rem;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: #6e8efb;
+    padding: 0.5rem;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
-    font-size: 2.3rem;
+    font-size: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     z-index: 10;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
 }
 
 .home-button:hover {
-    background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
+    background: #7b98fc;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .home-button:active {
     transform: translateY(0);
+    background: #6e8efb;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
