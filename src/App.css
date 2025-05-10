@@ -460,3 +460,41 @@ body {
     height: 36px;
   }
 }
+
+.responsive-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  margin-bottom: 1rem;
+}
+
+.responsive-title h1 {
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+@media (max-width: 500px) {
+  .hero {
+    padding-top: 2rem; /* Reduced from 4rem to shift entire page content up */
+  }
+
+  .hero-content {
+    margin-top: 1rem; /* Reduced from 2rem to shift content up */
+  }
+  
+  .hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .responsive-title h1 {
+    font-size: 3.5rem;
+  }
+  
+  /* Adjust spacing for the subtitle when title is split */
+  .responsive-title + .sub-header {
+    margin-top: -0.5rem; /* Negative margin to pull content up */
+    margin-bottom: 2rem; /* Reduced from 3rem to make layout more compact */
+  }
+}
