@@ -533,4 +533,11 @@
     padding: 0.3rem 0.6rem;
     font-size: 1.8rem;
   }
+  .stats-header{
+    padding-top: 3rem;
+  }
+
+  .key-metrics {
+    margin: 0.5rem 0;
+  }
 }
