@@ -92,7 +92,6 @@ Try the Cooked-O-Meter here: https://am-i-cooked-zeta.vercel.app/`;
         className="home-button"
         onClick={() => navigate('/')}
         title="Home"
-        style={{ background: 'transparent', border: 'none' }}
       >
         <FaHome />
       </button>

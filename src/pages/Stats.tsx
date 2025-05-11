@@ -196,7 +196,6 @@ const Stats = () => {
         className="home-button"
         onClick={() => navigate('/')}
         title="Home"
-        style={{ background: 'transparent', border: 'none' }}
       >
         <FaHome />
       </button>
