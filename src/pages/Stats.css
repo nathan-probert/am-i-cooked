@@ -540,4 +540,11 @@
   .key-metrics {
     margin: 0.5rem 0;
   }
+  .stats-header{
+    padding-top: 3rem;
+  }
+
+  .key-metrics {
+    margin: 0.5rem 0;
+  }
 }
