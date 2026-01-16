@@ -159,7 +159,7 @@ const resumeQuestionIds = new Set([
 // Function to analyze responses from the full survey
 async function analyzeFullSurvey(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Updated model
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // Updated model
 
     // Filter out resumeText if it accidentally got passed
     const surveyOnlyResponses = { ...responses };
@@ -239,7 +239,7 @@ async function analyzeFullSurvey(responses) {
 // Function to analyze responses from the partial survey AND resume text
 async function analyzeSurveyAndResume(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
 
     const { resumeText, ...partialSurveyAnswers } = responses;
 
@@ -325,7 +325,7 @@ async function analyzeSurveyAndResume(responses) {
 async function analyzeResumeText(resumeText) {
   // ... (keep existing implementation or remove if redundant) ...
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Using a potentially more capable model
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // Using a potentially more capable model
 
     const prompt = `
     As a career advisor, analyze the following resume text and provide a detailed assessment of whether the candidate is "cooked" (unprepared) or not for their job search based *solely* on this resume. The user is pursuing a computer science related role. Address the candidate directly in your response.
