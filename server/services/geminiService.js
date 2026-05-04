@@ -159,7 +159,7 @@ const resumeQuestionIds = new Set([
 // Function to analyze responses from the full survey
 async function analyzeFullSurvey(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // Updated model
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' }); // Updated model
 
     // Filter out resumeText if it accidentally got passed
     const surveyOnlyResponses = { ...responses };
@@ -172,7 +172,7 @@ async function analyzeFullSurvey(responses) {
 
     **Definitions:**
     - "Cooked" means clearly underprepared, or not competitive for their desired job.
-    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength, this will increase their possible job opportunities.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field" or a low salary expectation) as a strength, this will increase their possible job opportunities.
     - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and time used for preparation (tailored applications, Leetcode, hackathons) to guide your assessment.
     - Use the **Answer Options** below to understand the range of possible responses for each question.
 
@@ -241,7 +241,7 @@ async function analyzeFullSurvey(responses) {
 // Function to analyze responses from the partial survey AND resume text
 async function analyzeSurveyAndResume(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
 
     const { resumeText, ...partialSurveyAnswers } = responses;
 
@@ -264,7 +264,7 @@ async function analyzeSurveyAndResume(responses) {
 
     **Definitions:**
     - "Cooked" means clearly underprepared, or not competitive for their desired job.
-    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength, this will increase their possible job opportunities.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field" or a low minimum salary) as a strength, this will increase their possible job opportunities.
     - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and time used for preparation (tailored applications, Leetcode, hackathons) to guide your assessment.
     - Use the **Answer Options** below to understand the range of possible responses for each question.
     - Consider how the resume substantiates or contradicts the survey answers. The resume might neither contradict nor substantiate as well.
