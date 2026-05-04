@@ -11,7 +11,7 @@ const allQuestions = [
   {
     id: 'salary',
     question: 'What is your minimum acceptable salary?',
-    options: ['$0-40k', '$40-80k', '$80-120k', '$120-160k', '$160k-200k', '200k+']
+    options: ['$0', '$40k+', '$80k+', '$120k+', '$160k+', '200k+']
   },
   {
     id: 'location',
@@ -25,8 +25,8 @@ const allQuestions = [
   },
   {
     id: 'hours',
-    question: 'How many hours per week are you looking to work?',
-    options: ['Less than 20', '20-30', '31-40', '41-50', '50+']
+    question: 'What is the maximum number of hours per week you are willing to work?',
+    options: ['Under 20', '20-30', '31-40', '41-50', '50+']
   },
   {
     id: 'industry',
@@ -166,14 +166,14 @@ async function analyzeFullSurvey(responses) {
     delete surveyOnlyResponses.resumeText;
 
     const prompt = `
-    You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) or not.
-    Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are roasting them.
+    You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) to hunt for their preferred job or not.
+    Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are brutally roasting them.
     Keep the roasts light hearted.
 
     **Definitions:**
     - "Cooked" means clearly underprepared, or not competitive for their desired job.
-    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength.
-    - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and strategy (tailored applications, Leetcode, hackathons) to guide your assessment.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength, this will increase their possible job opportunities.
+    - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and time used for preparation (tailored applications, Leetcode, hackathons) to guide your assessment.
     - Use the **Answer Options** below to understand the range of possible responses for each question.
 
     ---
@@ -258,13 +258,16 @@ async function analyzeSurveyAndResume(responses) {
 
 
     const prompt = `
-    You are a sharp, no-nonsense career advisor. Analyze the candidate's job search readiness based on BOTH their resume text AND their answers to a subset of survey questions.
-    Assess whether the candidate is "cooked" (underprepared) or not. Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are roasting them.
+    You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) to hunt for their preferred job or not.
+    Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are brutally roasting them.
     Keep the roasts light hearted.
 
     **Definitions:**
-    - "Cooked" means clearly underprepared, lacking direction, or not competitive for their desired job based on the combined information.
-    - Consider how the resume substantiates or contradicts the survey answers.
+    - "Cooked" means clearly underprepared, or not competitive for their desired job.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength, this will increase their possible job opportunities.
+    - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and time used for preparation (tailored applications, Leetcode, hackathons) to guide your assessment.
+    - Use the **Answer Options** below to understand the range of possible responses for each question.
+    - Consider how the resume substantiates or contradicts the survey answers. The resume might neither contradict nor substantiate as well.
     - Evaluate the resume for clarity, impact, and relevance to typical CS roles (Software Engineering, Data Science, etc.).
     - Evaluate the survey answers for realism and alignment with the resume.
 
