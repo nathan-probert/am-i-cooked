@@ -10,8 +10,8 @@ const allQuestions = [
   },
   {
     id: 'salary',
-    question: 'What are your salary expectations?',
-    options: ['$0-40k', '$40-80k', '$80-120k', '$120-160k', '$160k-200k', '200k+']
+    question: 'What is your minimum acceptable salary?',
+    options: ['$0', '$40k+', '$80k+', '$120k+', '$160k+', '200k+']
   },
   {
     id: 'location',
@@ -25,8 +25,8 @@ const allQuestions = [
   },
   {
     id: 'hours',
-    question: 'How many hours per week are you looking to work?',
-    options: ['Less than 20', '20-30', '31-40', '41-50', '50+']
+    question: 'What is the maximum number of hours per week you are willing to work?',
+    options: ['Under 20', '20-30', '31-40', '41-50', '50+']
   },
   {
     id: 'industry',
@@ -159,20 +159,21 @@ const resumeQuestionIds = new Set([
 // Function to analyze responses from the full survey
 async function analyzeFullSurvey(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Updated model
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' }); // Updated model
 
     // Filter out resumeText if it accidentally got passed
     const surveyOnlyResponses = { ...responses };
     delete surveyOnlyResponses.resumeText;
 
     const prompt = `
-    You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) or not.
-    Provide an honest, constructive assessment speaking directly to the candidate.
+    You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) to hunt for their preferred job or not.
+    Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are brutally roasting them.
+    Keep the roasts light hearted.
 
     **Definitions:**
     - "Cooked" means clearly underprepared, or not competitive for their desired job.
-    - Treat openness (e.g., selecting "Any" for location or "Any Field") as a strength.
-    - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and strategy (tailored applications, Leetcode, hackathons) to guide your assessment.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field" or a low salary expectation) as a strength, this will increase their possible job opportunities.
+    - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and time used for preparation (tailored applications, Leetcode, hackathons) to guide your assessment.
     - Use the **Answer Options** below to understand the range of possible responses for each question.
 
     ---
@@ -205,7 +206,8 @@ async function analyzeFullSurvey(responses) {
       "cookedPercentage": number // A score from 0 (totally cooked) to 100 (well-prepared) based *only* on the survey
     }
 
-    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role.
+    Remeber that this analysis is based on the user's target job and the current state of the job market. The user is searching for a Computer Science related role.
+    DO NOT USE ANY MARKDOWN IN ANY OF YOUR RESPONSES.
     `;
 
     // ... rest of the function remains the same ...
@@ -239,7 +241,7 @@ async function analyzeFullSurvey(responses) {
 // Function to analyze responses from the partial survey AND resume text
 async function analyzeSurveyAndResume(responses) {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
 
     const { resumeText, ...partialSurveyAnswers } = responses;
 
@@ -256,11 +258,16 @@ async function analyzeSurveyAndResume(responses) {
 
 
     const prompt = `
-    You are a sharp, no-nonsense career advisor. Analyze the candidate's job search readiness based on BOTH their resume text AND their answers to a subset of survey questions. Assess whether the candidate is "cooked" (underprepared) or not. Provide an honest, constructive assessment speaking directly to the candidate.
+    You are a sharp, no-nonsense career advisor. Analyze the following job search survey responses to assess whether the candidate is "cooked" (underprepared) to hunt for their preferred job or not.
+    Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are brutally roasting them.
+    Keep the roasts light hearted.
 
     **Definitions:**
-    - "Cooked" means clearly underprepared, lacking direction, or not competitive for their desired job based on the combined information.
-    - Consider how the resume substantiates or contradicts the survey answers.
+    - "Cooked" means clearly underprepared, or not competitive for their desired job.
+    - Treat openness (e.g., selecting "Any" for location or "Any Field" or a low minimum salary) as a strength, this will increase their possible job opportunities.
+    - Use evidence of experience (internships, projects, GitHub, teamwork, etc.) and time used for preparation (tailored applications, Leetcode, hackathons) to guide your assessment.
+    - Use the **Answer Options** below to understand the range of possible responses for each question.
+    - Consider how the resume substantiates or contradicts the survey answers. The resume might neither contradict nor substantiate as well.
     - Evaluate the resume for clarity, impact, and relevance to typical CS roles (Software Engineering, Data Science, etc.).
     - Evaluate the survey answers for realism and alignment with the resume.
 
@@ -291,7 +298,8 @@ async function analyzeSurveyAndResume(responses) {
       "cookedPercentage": number // A score from 0 (totally cooked) to 100 (well-prepared) based on *both* inputs. 0 means the user will be unlikely to get the specific job they are looking for, and 100 means they will get the specific job they are looking for.
     }
 
-    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
+    Remeber that this analysis is based on the user's target job and the current state of the job market. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
+    DO NOT USE ANY MARKDOWN IN ANY OF YOUR RESPONSES.
     `;
 
     const result = await model.generateContent(prompt);
@@ -325,10 +333,12 @@ async function analyzeSurveyAndResume(responses) {
 async function analyzeResumeText(resumeText) {
   // ... (keep existing implementation or remove if redundant) ...
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Using a potentially more capable model
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // Using a potentially more capable model
 
     const prompt = `
-    As a career advisor, analyze the following resume text and provide a detailed assessment of whether the candidate is "cooked" (unprepared) or not for their job search based *solely* on this resume. The user is pursuing a computer science related role. Address the candidate directly in your response.
+    You are a sharp, no-nonsense career advisor. Analyze the candidate's job search readiness based on BOTH their resume text AND their answers to a subset of survey questions.
+    Assess whether the candidate is "cooked" (underprepared) or not. Provide an honest, constructive assessment speaking directly to the candidate but frame it in a way where you are roasting them.
+    Keep the roasts light hearted.
 
     Resume Text:
     --- START RESUME ---
@@ -352,7 +362,8 @@ async function analyzeResumeText(resumeText) {
       "confidenceScore": number
     }
 
-    Remeber that this analysis is based on the user's target job. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
+    Remember that this analysis is based on the user's target job and the current state of the job market. The user is searching for a Computer Science related role. Don't hold back. Do not be afraid to give 0.
+    DO NOT USE ANY MARKDOWN IN ANY OF YOUR RESPONSES.
     `;
 
     const result = await model.generateContent(prompt);

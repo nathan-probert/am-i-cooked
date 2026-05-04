@@ -143,7 +143,7 @@ const Stats = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('https://am-i-cooked-vssc.onrender.com/api/survey/stats');
+        const response = await fetch('https://am-i-cooked.onrender.com/api/survey/stats');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data: SurveyData[] = await response.json();
         setSurveys(data);
@@ -162,7 +162,7 @@ const Stats = () => {
   if (isLoading) return (
     <div className="loading-container">
       <div className="spinner"></div>
-      <p>Loading survey data...</p>
+      <p>Loading survey data. This may take a few minutes...</p>
     </div>
   );
 
