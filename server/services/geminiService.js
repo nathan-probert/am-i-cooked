@@ -10,7 +10,7 @@ const allQuestions = [
   },
   {
     id: 'salary',
-    question: 'What are your salary expectations?',
+    question: 'What is your minimum acceptable salary?',
     options: ['$0-40k', '$40-80k', '$80-120k', '$120-160k', '$160k-200k', '200k+']
   },
   {
