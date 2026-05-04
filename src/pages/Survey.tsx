@@ -17,7 +17,7 @@ const allQuestions = [
   {
     id: 'salary',
     question: 'What is your minimum acceptable salary?',
-    options: ['$0-40k', '$40-80k', '$80-120k', '$120-160k', '$160k-200k', '200k+']
+    options: ['$0', '$40k+', '$80k+', '$120k+', '$160k+', '200k+']
   },
   {
     id: 'location',
@@ -31,8 +31,8 @@ const allQuestions = [
   },
   {
     id: 'hours',
-    question: 'How many hours per week are you looking to work?',
-    options: ['Less than 20', '20-30', '31-40', '41-50', '50+']
+    question: 'What is the maximum number of hours per week you are willing to work?',
+    options: ['Under 20', '20-30', '31-40', '41-50', '50+']
   },
   {
     id: 'industry',
